@@ -197,10 +197,10 @@
                         data: null,
                         render: function (data, type, row) {
                             return `<div class="d-flex justify-content-center">
-                                    <button type="button" class="btn btn-sm btn-warning m-1" id="btn_detail_karyawan" onclick="detail_karyawan(${row.nik})">Detail</button>
-                                    <button type="button" class="btn btn-sm btn-primary m-1" id="btn_edit_karyawan" onclick="edit_karyawan(${row.nik})">Edit</button>
-                                    <button type="button" class="btn btn-sm btn-danger m-1" onclick="showConfirm(${row.nik})">Delete</button>
-                                </div>`;
+                                        <button type="button" class="btn btn-sm btn-warning m-1" id="btn_detail_karyawan" onclick="detail_karyawan(${row.nik})">Detail</button>
+                                        <button type="button" class="btn btn-sm btn-primary m-1" id="btn_edit_karyawan" onclick="edit_karyawan(${row.nik})">Edit</button>
+                                        <button type="button" class="btn btn-sm btn-danger m-1" onclick="showConfirm(${row.nik})">Delete</button>
+                                    </div>`;
                         }
                     }
                 ],
@@ -302,8 +302,8 @@
                     showError("Error...", error.response.data.message);
                 }
             } else {
-                // if (nikElement.value == '') showError("Error", "NIK is required");
-                // else if (nameElement.value == '') showError("Error", "Name is required");
+                if (nikElement.value == '') showError("Error", "NIK is required");
+                else if (nameElement.value == '') showError("Error", "Name is required");
             }
         }
 
