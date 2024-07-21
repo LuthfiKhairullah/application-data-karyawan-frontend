@@ -139,6 +139,13 @@
     <script src="assets/select2_4.1.0/js/select2.min.js"></script>
     <script>
         const apiUrl = 'https://data-karyawan-api.up.railway.app/api/karyawan';
+        const config = {
+            headers: {
+                "Access-Control-Allow-Origin": '*',
+                "Access-Control-Allow-Methods": 'GET, POST, OPTIONS',
+                "Access-Control-Allow-Headers": 'Content-Type, Authorization',
+            }
+        };
 
         const nikSearchElement = document.querySelector('#nik_search');
         const nameSearchElement = document.querySelector('#name_search');
@@ -233,7 +240,7 @@
             else if (name != null) message = `?name=${name}`;
             else if (nik != null) message = `?nik=${nik}`;
             try {
-                const responseJson = await axios.get(apiUrl + '/get_karyawan' + params);
+                const responseJson = await axios.get(apiUrl + '/get_karyawan' + params, config);
                 table.clear().rows.add(responseJson.data.content).draw();
             } catch (error) {
                 showError("Error...", error.response.data.message);
@@ -241,7 +248,7 @@
         });
 
         async function setNegara() {
-            const responseJson = await axios.get('https://restcountries.com/v3.1/all');
+            const responseJson = await axios.get('https://restcountries.com/v3.1/all', config);
             negaraElement.innerHTML = '<option value="" selected>Pilih Negara</option>';
             responseJson.data.forEach(negara => {
                 const option = document.createElement('option');
@@ -268,7 +275,7 @@
 
         async function loadKaryawan() {
             try {
-                const responseJson = await axios.get(apiUrl + '/get_karyawan');
+                const responseJson = await axios.get(apiUrl + '/get_karyawan', config);
                 table.clear().rows.add(responseJson.data.content).draw();
             } catch (error) {
                 return console.error(error.response.data.message);
@@ -290,7 +297,7 @@
                 }
 
                 try {
-                    const response = await axios.post(apiUrl + '/add_karyawan', data);
+                    const response = await axios.post(apiUrl + '/add_karyawan', data, config);
                     await loadKaryawan();
                     $("#modal_update").modal('hide');
                 } catch (error) {
@@ -306,7 +313,7 @@
             $('#form_update_karyawan')[0].reset();
             if (nikParam != '') {
                 try {
-                    const responseJson = await axios.get(apiUrl + '/get_karyawan/' + nikParam);
+                    const responseJson = await axios.get(apiUrl + '/get_karyawan/' + nikParam, config);
                     let response = responseJson.data.content[0];
                     nikElement.value = response.nik;
                     nameElement.value = response.name;
@@ -360,7 +367,7 @@
                 }
 
                 try {
-                    const responseJson = await axios.put(apiUrl + '/update_karyawan/' + nikParam, data);
+                    const responseJson = await axios.put(apiUrl + '/update_karyawan/' + nikParam, data, config);
                     await loadKaryawan();
                     $("#modal_update").modal('hide');
                 } catch (error) {
@@ -373,7 +380,7 @@
 
         async function delete_karyawan(nikParam) {
             try {
-                const responseJson = await axios.delete(apiUrl + '/delete_karyawan/' + nikParam);
+                const responseJson = await axios.delete(apiUrl + '/delete_karyawan/' + nikParam, config);
                 await loadKaryawan();
             } catch (error) {
                 showError("Error...", error.response.data.message);
