@@ -115,8 +115,6 @@
                             <label for="negara_update" class="form-label">Negara</label>
                             <select class="form-select" id="negara_update" style="width:100%">
                                 <option value="" selected>Pilih Negara</option>
-                                <option value="Indonesia">Indonesia</option>
-                                <option value="Inggris">Inggris</option>
                             </select>
                         </div>
                     </div>
@@ -184,7 +182,13 @@
                     { data: null },
                     { data: 'nik' },
                     { data: 'name' },
-                    { data: 'umur' },
+                    {
+                        data: 'umur',
+                        render: function (data, type, row) {
+                            if (row.tgl_lahir != null) return `${getUmur(row.tgl_lahir)}`;
+                            else return row.umur;
+                        }
+                    },
                     { data: 'tgl_lahir' },
                     { data: 'jenis_kelamin' },
                     { data: 'alamat' },
@@ -193,10 +197,10 @@
                         data: null,
                         render: function (data, type, row) {
                             return `<div class="d-flex justify-content-center">
-                                <button type="button" class="btn btn-sm btn-warning m-1" id="btn_detail_karyawan" onclick="detail_karyawan(${row.nik})">Detail</button>
-                                <button type="button" class="btn btn-sm btn-primary m-1" id="btn_edit_karyawan" onclick="edit_karyawan(${row.nik})">Edit</button>
-                                <button type="button" class="btn btn-sm btn-danger m-1" onclick="showConfirm(${row.nik})">Delete</button>
-                            </div>`;
+                                    <button type="button" class="btn btn-sm btn-warning m-1" id="btn_detail_karyawan" onclick="detail_karyawan(${row.nik})">Detail</button>
+                                    <button type="button" class="btn btn-sm btn-primary m-1" id="btn_edit_karyawan" onclick="edit_karyawan(${row.nik})">Edit</button>
+                                    <button type="button" class="btn btn-sm btn-danger m-1" onclick="showConfirm(${row.nik})">Delete</button>
+                                </div>`;
                         }
                     }
                 ],
@@ -207,7 +211,7 @@
                     api.column(0, { page: 'current' }).nodes().each(function (cell, i) {
                         cell.innerHTML = i + 1 + info.start;
                     });
-                }
+                },
             });
         });
 
@@ -220,8 +224,8 @@
             $('#form_update_karyawan textarea').removeAttr('disabled');
             $('#form_update_karyawan select').removeAttr('disabled');
             $('#nik_update').removeAttr('disabled');
-            $('#form_update_karyawan')[0].reset();
             $('#negara_update').val('').trigger('change');
+            $('#form_update_karyawan')[0].reset();
             $('#modal_update').modal('show');
         });
 
@@ -278,15 +282,16 @@
         async function add_karyawan() {
             let umur = await getUmur(tgl_lahirElement.value);
 
-            if (nikElement.value != '' || nameElement.value != '') {
+            if (nikElement.value != '' && nameElement.value != '') {
                 let data = {
-                    nik: parseInt(nikElement.value),
+                    nik: nikElement.value,
                     name: nameElement.value,
                     jenis_kelamin: $('input[name="jenis_kelamin_update"]:checked').val(),
                     umur: umur,
                     tgl_lahir: tgl_lahirElement.value,
                     alamat: alamatElement.value,
                     negara: negaraElement.value,
+                    created_at: new Date()
                 }
 
                 try {
@@ -297,8 +302,8 @@
                     showError("Error...", error.response.data.message);
                 }
             } else {
-                if (nikElement.value == '') showError("Error", "NIK is required");
-                else if (nameElement.value == '') showError("Error", "Name is required");
+                // if (nikElement.value == '') showError("Error", "NIK is required");
+                // else if (nameElement.value == '') showError("Error", "Name is required");
             }
         }
 
